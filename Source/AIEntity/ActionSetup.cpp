@@ -83,6 +83,7 @@ AActionSetup::AActionSetup()
 		30,
 		false
 	);
+
 	FallingTraceSettings = FMantle_TraceSettings(
 		150,
 		50,
@@ -105,327 +106,161 @@ AActionSetup::AActionSetup()
 	// Setup default anims
 
 	// Roll - Montage
-	RollMontage.Add(
-		OverlayState::Default,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_Default"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Masculine,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_Default"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Feminine,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_Default"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Injured,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_LH"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Bow,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_LH"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Torch,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_LH"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Barrel,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_LH"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Pistol_1H,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_RH"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Pistol_2H,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_RH"))
-	);
-
-	RollMontage.Add(
-		OverlayState::HandsTied,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_2H"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Rifle,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_2H"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Binoculars,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_2H"))
-	);
-
-	RollMontage.Add(
-		OverlayState::Box,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_LandRoll_F_Montage_2H"))
+	SetRollMontage(
+		"CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions",
+		{
+			{
+				"ALS_N_LandRoll_F_Montage_Default",
+				{
+					OverlayState::Default,
+					OverlayState::Masculine,
+					OverlayState::Feminine
+				}
+			},
+			{
+				"ALS_N_LandRoll_F_Montage_LH",
+				{
+					OverlayState::Injured,
+					OverlayState::Bow,
+					OverlayState::Torch,
+					OverlayState::Barrel
+				}
+			},
+			{
+				"ALS_N_LandRoll_F_Montage_RH",
+				{
+					OverlayState::Pistol_1H,
+					OverlayState::Pistol_2H
+				}
+			},
+			{
+				"ALS_N_LandRoll_F_Montage_2H",
+				{
+					OverlayState::HandsTied,
+					OverlayState::Rifle,
+					OverlayState::Binoculars,
+					OverlayState::Box
+				}
+			}
+		}
 	);
 
 	// Mantle - Montage
 
-	MantleMontage.Add(
-		OverlayState::Default,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_1m_Montage_Default"))
+	SetMantleMontage(
+		"CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions",
+		{
+			{
+				"ALS_N_Mantle_1m_Montage_Default",
+				{
+					OverlayState::Default,
+					OverlayState::Masculine,
+					OverlayState::Feminine
+				}
+			},
+			{
+				"ALS_N_Mantle_2m_Montage_Default",
+				{
+					OverlayState::Injured,
+					OverlayState::Bow,
+					OverlayState::Torch,
+					OverlayState::Barrel
+				}
+			},
+			{
+				"ALS_N_Mantle_1m_Montage_RH",
+				{
+					OverlayState::Pistol_1H,
+					OverlayState::Pistol_2H,
+					OverlayState::Rifle,
+					OverlayState::Binoculars
+				}
+			},
+			{
+				"ALS_N_Mantle_2m_Montage_Default",
+				{
+					OverlayState::HandsTied,
+					OverlayState::Box
+				}
+			}
+		}
 	);
 
-	MantleMontage.Add(
-		OverlayState::Masculine,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_1m_Montage_Default"))
+	// Roll - Montage - Back
+
+	SetRagdollMontage(
+		"CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions",
+		{
+			{
+				"ALS_CLF_GetUp_Back_Montage_Default",
+				{
+					OverlayState::Default,
+					OverlayState::Masculine,
+					OverlayState::Feminine,
+					OverlayState::Injured,
+					OverlayState::Torch,
+					OverlayState::Barrel,
+					OverlayState::Bow
+				}
+			},
+			{
+				"ALS_CLF_GetUp_Back_Montage_RH",
+				{
+					OverlayState::Pistol_1H,
+					OverlayState::Pistol_2H,
+					OverlayState::Rifle,
+					OverlayState::Binoculars
+				},
+			},
+			{
+				"ALS_CLF_GetUp_Back_Montage_2H",
+				{
+					OverlayState::HandsTied,
+					OverlayState::Box
+				},
+			}
+		},
+		false
 	);
 
-	MantleMontage.Add(
-		OverlayState::Feminine,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_1m_Montage_Default"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Injured,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_2m_Montage_Default"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Bow,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_2m_Montage_Default"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Torch,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_2m_Montage_Default"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Barrel,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_2m_Montage_Default"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Pistol_1H,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_1m_Montage_RH"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Pistol_2H,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_1m_Montage_RH"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Rifle,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_1m_Montage_RH"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Binoculars,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_1m_Montage_RH"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::HandsTied,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_2m_Montage_Default"))
-	);
-
-	MantleMontage.Add(
-		OverlayState::Box,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_1m_Montage_Box"))
-	);
-
-	// Mantle - Montage - Back
-
-	RagdollMontageBack.Add(
-		OverlayState::Default,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_Default"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Masculine,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_Default"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Feminine,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_Default"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Injured,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_Default"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Bow,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_Default"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Torch,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_Default"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Barrel,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_Default"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Pistol_1H,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_RH"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Pistol_2H,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_RH"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Rifle,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_RH"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Binoculars,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_RH"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::HandsTied,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_2H"))
-	);
-
-	RagdollMontageBack.Add(
-		OverlayState::Box,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Back_Montage_2H"))
-	);
-
-	// Mantle - Montage - Front
-
-	RagdollMontageFront.Add(
-		OverlayState::Default,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_Default"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Masculine,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_Default"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Feminine,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_Default"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Injured,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_Default"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Bow,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_Default"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Torch,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_Default"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Barrel,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_Default"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Pistol_1H,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_RH"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Pistol_2H,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_RH"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Rifle,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_RH"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Binoculars,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_RH"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::HandsTied,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_2H"))
-	);
-
-	RagdollMontageFront.Add(
-		OverlayState::Box,
-		LoadObject<UAnimMontage>(nullptr, TEXT(
-			                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_CLF_GetUp_Front_Montage_2H"))
+	SetRagdollMontage(
+		"CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions",
+		{
+			{
+				"ALS_CLF_GetUp_Front_Montage_Default",
+				{
+					OverlayState::Default,
+					OverlayState::Masculine,
+					OverlayState::Feminine,
+					OverlayState::Injured,
+					OverlayState::Torch,
+					OverlayState::Barrel,
+					OverlayState::Bow
+				}
+			},
+			{
+				"ALS_CLF_GetUp_Front_Montage_RH",
+				{
+					OverlayState::Pistol_1H,
+					OverlayState::Pistol_2H,
+					OverlayState::Rifle,
+					OverlayState::Binoculars
+				},
+			},
+			{
+				"ALS_CLF_GetUp_Front_Montage_2H",
+				{
+					OverlayState::HandsTied,
+					OverlayState::Box
+				},
+			}
+		}
 	);
 }
 
-////////////////////////////////////////////////////////////////////////////////////
-// Actions
+/*********************************************************************************************
+* Actions
+********************************************************************************************* */
 
 void AActionSetup::AdvanceMove(const FInputActionValue& Value)
 {
@@ -509,14 +344,7 @@ void AActionSetup::AdvanceRagdoll()
 		{
 			GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 
-			if (RagdollFaceUp)
-			{
-				AnimInstance->Montage_Play(RagdollMontageBack[CurrentOverlayState]);
-			}
-			else
-			{
-				AnimInstance->Montage_Play(RagdollMontageFront[CurrentOverlayState]);
-			}
+			AnimInstance->Montage_Play(GetRagdollMontage(CurrentOverlayState, RagdollFaceUp));
 		}
 		else
 		{
@@ -547,12 +375,12 @@ void AActionSetup::AdvanceRagdoll()
 
 void AActionSetup::AdvanceSprintStart()
 {
-	desiredGait = Gait::Sprinting;
+	DesiredGait = Gait::Sprinting;
 }
 
 void AActionSetup::AdvanceSprintEnd()
 {
-	desiredGait = Gait::Running;
+	DesiredGait = Gait::Running;
 }
 
 void AActionSetup::AdvanceCrouch()
@@ -592,7 +420,7 @@ void AActionSetup::AdvanceRoll()
 	if (AnimInstance && RollMontage.Find(CurrentOverlayState) != nullptr)
 	{
 		AnimInstance->Montage_Play(
-			RollMontage[CurrentOverlayState],
+			GetRollMontage(CurrentOverlayState),
 			1.15
 		);
 	}
@@ -608,16 +436,17 @@ void AActionSetup::AdvanceRoll()
 
 void AActionSetup::AdvanceAimStart()
 {
-    CurrentRotationMode = RotationMode::Aiming;
+	CurrentRotationMode = RotationMode::Aiming;
 }
 
 void AActionSetup::AdvanceAimEnd()
 {
-    CurrentRotationMode = RotationMode::LookingDirection;
+	CurrentRotationMode = RotationMode::LookingDirection;
 }
 
-////////////////////////////////////////////////////////////////////////////////////
-// Events
+/*********************************************************************************************
+* Events
+********************************************************************************************* */
 
 void AActionSetup::Jump()
 {
@@ -725,8 +554,9 @@ void AActionSetup::Tick(float DeltaTime)
 	PreviousAimYaw = GetControlRotation().Yaw;
 }
 
-////////////////////////////////////////////////////////////////////////////////////
-// Interface
+/*********************************************************************************************
+* Interface
+********************************************************************************************* */
 
 void AActionSetup::INTF_Set_MovementState_Implementation(MovementState NewMovementState)
 {
@@ -771,14 +601,16 @@ void AActionSetup::INTF_Get_CurrentStates_Implementation(
 	OutOverlayState = CurrentOverlayState;
 }
 
-////////////////////////////////////////////////////////////////////////////////////
-// Components
+/*********************************************************************************************
+* Components
+********************************************************************************************* */
 
-bool AActionSetup::MantleCheck(FMantle_TraceSettings traceSettings, double ForwardDesiredLocation,
-                               double RightDesiredLocation, EDrawDebugTrace::Type debug)
+bool AActionSetup::MantleCheck(FMantle_TraceSettings TraceSettings, double ForwardDesiredLocation,
+                               double RightDesiredLocation, EDrawDebugTrace::Type Debug)
 {
-	///////////////////////////////////////////////////////////////////////
-	/// Find non-walkable object
+	/*********************************************************************************************
+	* Find non-walkable object
+	********************************************************************************************* */
 
 	FVector capsuleBaseLocation = GetCapsuleComponent()->GetComponentLocation() - (GetCapsuleComponent()->GetUpVector()
 		* (
@@ -796,7 +628,7 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings traceSettings, double Forwa
 	// get right vector 
 	FVector rightDirection = FRotationMatrix(yawRotation).GetUnitAxis(EAxis::Y);
 
-	if (traceSettings.HasDesiredLocation)
+	if (TraceSettings.HasDesiredLocation)
 	{
 		forwardDirection *= ForwardDesiredLocation;
 
@@ -805,14 +637,13 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings traceSettings, double Forwa
 
 	FVector movementInput = forwardDirection + rightDirection;
 	movementInput.Normalize();
-	// FVector movementInput = VectorNormalize(GetActorForwardVector()); // -> If (forward + right) doesnt work
 
 	FVector startTrace = capsuleBaseLocation + (movementInput * -30);
-	startTrace.Z += (traceSettings.MaxLedgeHeight + traceSettings.MinLedgeHeight) / 2;
+	startTrace.Z += (TraceSettings.MaxLedgeHeight + TraceSettings.MinLedgeHeight) / 2;
 
-	FVector endTrace = startTrace + (movementInput * traceSettings.ReachDistance);
+	FVector endTrace = startTrace + (movementInput * TraceSettings.ReachDistance);
 
-	float halfHeight = traceSettings.MaxLedgeHeight - traceSettings.MinLedgeHeight;
+	float halfHeight = TraceSettings.MaxLedgeHeight - TraceSettings.MinLedgeHeight;
 
 	halfHeight = (halfHeight / 2) + 1;
 
@@ -820,12 +651,12 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings traceSettings, double Forwa
 		this,
 		startTrace,
 		endTrace,
-		traceSettings.ForwardTraceRadius,
+		TraceSettings.ForwardTraceRadius,
 		halfHeight,
 		UEngineTypes::ConvertToTraceType(collissionChannel),
 		false,
 		TArray<AActor*>(),
-		debug,
+		Debug,
 		Hit,
 		true
 	);
@@ -835,22 +666,23 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings traceSettings, double Forwa
 	FVector initialTraceImpactPoint = Hit.ImpactPoint;
 	FVector initialTraceImpactNormal = Hit.ImpactNormal;
 
-	///////////////////////////////////////////////////////////////////////
-	/// Find walkable surface and impact point
+	/*********************************************************************************************
+	* Find walkable surface and impact point
+	********************************************************************************************* */
 
 	endTrace = FVector(initialTraceImpactPoint.X, initialTraceImpactPoint.Y, capsuleBaseLocation.Z) +
 		initialTraceImpactNormal * -15;
-	startTrace = endTrace + FVector(0, 0, traceSettings.MaxLedgeHeight + traceSettings.DownwardTraceRadius + 1);
+	startTrace = endTrace + FVector(0, 0, TraceSettings.MaxLedgeHeight + TraceSettings.DownwardTraceRadius + 1);
 
 	UKismetSystemLibrary::SphereTraceSingle(
 		this,
 		startTrace,
 		endTrace,
-		traceSettings.DownwardTraceRadius,
+		TraceSettings.DownwardTraceRadius,
 		UEngineTypes::ConvertToTraceType(collissionChannel),
 		false,
 		TArray<AActor*>(),
-		debug,
+		Debug,
 		Hit,
 		true,
 		FLinearColor::FromSRGBColor(FColor::Purple),
@@ -863,8 +695,9 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings traceSettings, double Forwa
 
 	UPrimitiveComponent* hitComponent = Hit.GetComponent();
 
-	///////////////////////////////////////////////////////////////////////
-	/// Find if capsule has room and calculate mantle height
+	/*********************************************************************************************
+	* Find if capsule has room and calculate mantle height
+	********************************************************************************************* */
 
 	FVector capsuleLocationFromBase = FVector(
 		DownTraceLocation.X,
@@ -891,7 +724,7 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings traceSettings, double Forwa
 		UEngineTypes::ConvertToTraceType(collissionChannel),
 		false,
 		TArray<AActor*>(),
-		debug,
+		Debug,
 		Hit,
 		true,
 		FLinearColor::Yellow,
@@ -917,14 +750,14 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings traceSettings, double Forwa
 	return true;
 }
 
-void AActionSetup::MantleStart(float mantleHeight, FComponentAndTransform mantleLedgeWS, MantleType mantleType)
+void AActionSetup::MantleStart(float MantleHeight, FComponentAndTransform MantleLedgeWS, MantleType mantleType)
 {
-	FMantleAsset mantleAsset;
+	FMantleAsset MantleAsset;
 
 	switch (mantleType)
 	{
 	case MantleType::HighMantle:
-		mantleAsset = FMantleAsset(
+		MantleAsset = FMantleAsset(
 			LoadObject<UAnimMontage>(nullptr, TEXT(
 				                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_2m_Montage_Default")),
 			LoadObject<UCurveVector>(nullptr, TEXT("/Game/CharacterAnimSetup/Data/Curves/MantleCurves/Mantle_2m")),
@@ -939,7 +772,7 @@ void AActionSetup::MantleStart(float mantleHeight, FComponentAndTransform mantle
 		break;
 
 	case MantleType::LowMantle:
-		mantleAsset = FMantleAsset(
+		MantleAsset = FMantleAsset(
 			MantleMontage[CurrentOverlayState],
 			LoadObject<UCurveVector>(nullptr, TEXT("/Game/CharacterAnimSetup/Data/Curves/MantleCurves/Mantle_1m")),
 			FVector(0, 65, 100),
@@ -953,7 +786,7 @@ void AActionSetup::MantleStart(float mantleHeight, FComponentAndTransform mantle
 		break;
 
 	case MantleType::FallingCatch:
-		mantleAsset = FMantleAsset(
+		MantleAsset = FMantleAsset(
 			LoadObject<UAnimMontage>(nullptr, TEXT(
 				                         "/Game/CharacterAnimSetup/CharacterAssets/MannequinSkeleton/AnimationExamples/Actions/ALS_N_Mantle_2m_Montage_Default")),
 			LoadObject<UCurveVector>(nullptr, TEXT("/Game/CharacterAnimSetup/Data/Curves/MantleCurves/Mantle_2m")),
@@ -969,27 +802,27 @@ void AActionSetup::MantleStart(float mantleHeight, FComponentAndTransform mantle
 	}
 
 	MantleParams = FMantleParams(
-		mantleAsset.AnimMontage,
-		mantleAsset.PositionAndCorrectiveCurve,
+		MantleAsset.AnimMontage,
+		MantleAsset.PositionAndCorrectiveCurve,
 		FMath::GetMappedRangeValueClamped(
-			FVector2d(mantleAsset.LowHeight, mantleAsset.HighHeight),
-			FVector2d(mantleAsset.LowStartPosition, mantleAsset.HighStartPosition),
-			mantleHeight
+			FVector2d(MantleAsset.LowHeight, MantleAsset.HighHeight),
+			FVector2d(MantleAsset.LowStartPosition, MantleAsset.HighStartPosition),
+			MantleHeight
 		),
 		FMath::GetMappedRangeValueClamped(
-			FVector2d(mantleAsset.LowHeight, mantleAsset.HighHeight),
-			FVector2d(mantleAsset.LowPlayRate, mantleAsset.HighPlayRate),
-			mantleHeight
+			FVector2d(MantleAsset.LowHeight, MantleAsset.HighHeight),
+			FVector2d(MantleAsset.LowPlayRate, MantleAsset.HighPlayRate),
+			MantleHeight
 		),
-		mantleAsset.StartingOffset
+		MantleAsset.StartingOffset
 	);
 
 	MantleLedgeLs = FComponentAndTransform(
-		mantleLedgeWS.Transform * mantleLedgeWS.Component->GetComponentTransform().Inverse(),
-		mantleLedgeWS.Component
+		MantleLedgeWS.Transform * MantleLedgeWS.Component->GetComponentTransform().Inverse(),
+		MantleLedgeWS.Component
 	);
 
-	MantleTarget = mantleLedgeWS.Transform;
+	MantleTarget = MantleLedgeWS.Transform;
 
 	ActualStartOffset = FTransform(
 		GetActorTransform().GetRotation() - MantleTarget.GetRotation(),
@@ -1034,17 +867,18 @@ void AActionSetup::UpdateCharacterMovement()
 {
 	Gait AllowedGait = Gait::Running;
 
-	///////////////////////////////////////////////////////////////////////
-	/// Check if gait can be used
+	/*********************************************************************************************
+	* Check if gait can be used
+	********************************************************************************************* */
 
 	if (CurrentStance == Stance::Crouching || CurrentRotationMode == RotationMode::Aiming)
 	{
-		if (desiredGait == Gait::Walking) AllowedGait = Gait::Walking;
+		if (DesiredGait == Gait::Walking) AllowedGait = Gait::Walking;
 		else AllowedGait = Gait::Running;
 	}
 	else
 	{
-		switch (desiredGait)
+		switch (DesiredGait)
 		{
 		case Gait::Running:
 			AllowedGait = Gait::Running;
@@ -1082,8 +916,9 @@ void AActionSetup::UpdateCharacterMovement()
 		CurrentActualGait = Gait::Running;
 	else CurrentActualGait = Gait::Walking;
 
-	///////////////////////////////////////////////////////////////////////
-	/// Setup Movement Settings
+	/*********************************************************************************************
+	* Setup Movement Settings
+	********************************************************************************************* */
 
 	if (MovementModel.IsNull())
 	{
@@ -1151,7 +986,7 @@ void AActionSetup::UpdateCharacterMovement()
 		return;
 	}
 
-	FVector MovementVal = CurrentMovementSettings.MovementCurve->GetVectorValue(MappedSeed());
+	FVector MovementVal = CurrentMovementSettings.MovementCurve->GetVectorValue(MappedSpeed());
 	GetCharacterMovement()->MaxAcceleration = MovementVal.X;
 	GetCharacterMovement()->BrakingDecelerationWalking = MovementVal.Y;
 	GetCharacterMovement()->GroundFriction = MovementVal.Z;
@@ -1161,7 +996,7 @@ void AActionSetup::EssentialValuesSetup()
 {
 	Acceleration = (GetVelocity() - PreviousVelocity) / GetWorld()->GetDeltaSeconds();
 
-	Speed = FVector(GetVelocity().X, GetVelocity().Y, 0).Size();
+	Speed = FVector(GetVelocity().X, GetVelocity().Y, 0).Length();
 
 	IsMoving = Speed > 1;
 
@@ -1198,7 +1033,7 @@ void AActionSetup::UpdateGroundRotation()
 
 	if (((IsMoving && HasMovementInput) || Speed > 150) && !HasAnyRootMotion())
 	{
-		float GroundedRotationRate = CurrentMovementSettings.RotationRateCurve->GetFloatValue(MappedSeed());
+		float GroundedRotationRate = CurrentMovementSettings.RotationRateCurve->GetFloatValue(MappedSpeed());
 		GroundedRotationRate *= UKismetMathLibrary::MapRangeClamped(AimYawRate, 0, 300, 1, 3);
 
 		switch (CurrentRotationMode)
@@ -1215,9 +1050,11 @@ void AActionSetup::UpdateGroundRotation()
 			}
 
 			SmoothCharacterRotation(
-				FRotator(0, 0, GetControlRotation().Yaw + (AnimInstance
-					                                           ? AnimInstance->GetCurveValue("YawOffset")
-					                                           : 0)),
+				FRotator(
+					0,
+					0,
+					GetControlRotation().Yaw + (AnimInstance ? AnimInstance->GetCurveValue("YawOffset") : 0)
+				),
 				500,
 				GroundedRotationRate
 			);
@@ -1264,7 +1101,7 @@ void AActionSetup::UpdateAirRotation()
 	SmoothCharacterRotation(FRotator(0, 0, InAirRotation.Yaw), 0, 5);
 }
 
-void AActionSetup::UpdateRagdoll(EDrawDebugTrace::Type debug)
+void AActionSetup::UpdateRagdoll(EDrawDebugTrace::Type Debug)
 {
 	LastRagdollVelocity = GetMesh()->GetPhysicsLinearVelocity("root");
 
@@ -1286,7 +1123,7 @@ void AActionSetup::UpdateRagdoll(EDrawDebugTrace::Type debug)
 	TargetRagdollLocation = GetMesh()->GetSocketLocation("pelvis");
 
 	float PelvisRotation = GetMesh()->GetSocketRotation("pelvis").Yaw;
-	
+
 	RagdollFaceUp = GetMesh()->GetSocketRotation("pelvis").Roll < 0;
 
 	FRotator TargetRagdollRotation = FRotator(
@@ -1294,7 +1131,7 @@ void AActionSetup::UpdateRagdoll(EDrawDebugTrace::Type debug)
 		0,
 		RagdollFaceUp ? PelvisRotation - 180 : PelvisRotation
 	);
-	
+
 	FHitResult Hit;
 
 	UKismetSystemLibrary::LineTraceSingle(
@@ -1305,7 +1142,7 @@ void AActionSetup::UpdateRagdoll(EDrawDebugTrace::Type debug)
 		UEngineTypes::ConvertToTraceType(ECC_Visibility),
 		false,
 		TArray<AActor*>(),
-		debug,
+		Debug,
 		Hit,
 		true
 	);
@@ -1352,7 +1189,7 @@ void AActionSetup::SmoothCharacterRotation(FRotator Target, float TargetInterpSp
 	));
 }
 
-float AActionSetup::MappedSeed()
+float AActionSetup::MappedSpeed()
 {
 	if (Speed > CurrentMovementSettings.RunSpeed)
 		return UKismetMathLibrary::MapRangeClamped(
@@ -1381,9 +1218,139 @@ float AActionSetup::MappedSeed()
 	);
 }
 
+void AActionSetup::SetRollMontage(FString PathFolder, TMap<FString, TArray<OverlayState>> States)
+{
+	PathFolder = "/Game/" + PathFolder + "/";
+	FString MontagePath = "";
 
-////////////////////////////////////////////////////////////////////////////////////
-// Timelines
+	for (auto Group : States)
+	{
+		MontagePath = PathFolder + Group.Key;
+		UAnimMontage* MontageObj = LoadObject<UAnimMontage>(nullptr, *MontagePath);
+
+		if (!MontageObj)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Failed to set roll montage: " + MontagePath);
+
+			return;
+		}
+
+		for (OverlayState State : Group.Value)
+		{
+			if (RollMontage.Find(State))
+			{
+				RollMontage[State] = MontageObj;
+				continue;
+			}
+
+			RollMontage.Add(State, MontageObj);
+		}
+	}
+}
+
+void AActionSetup::SetMantleMontage(FString PathFolder, TMap<FString, TArray<OverlayState>> States)
+{
+	PathFolder = "/Game/" + PathFolder + "/";
+	FString MontagePath = "";
+
+	for (auto Group : States)
+	{
+		MontagePath = PathFolder + Group.Key;
+		UAnimMontage* MontageObj = LoadObject<UAnimMontage>(nullptr, *MontagePath);
+
+		if (!MontageObj)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Failed to set mantle montage: " + MontagePath);
+
+			return;
+		}
+
+		for (OverlayState State : Group.Value)
+		{
+			if (MantleMontage.Find(State))
+			{
+				MantleMontage[State] = MontageObj;
+				continue;
+			}
+
+			MantleMontage.Add(State, MontageObj);
+		}
+	}
+}
+
+void AActionSetup::SetRagdollMontage(FString PathFolder, TMap<FString, TArray<OverlayState>> States, bool IsFront)
+{
+	PathFolder = "/Game/" + PathFolder + "/";
+	FString MontagePath = "";
+
+	for (auto Group : States)
+	{
+		MontagePath = PathFolder + Group.Key;
+		UAnimMontage* MontageObj = LoadObject<UAnimMontage>(nullptr, *MontagePath);
+
+		if (!MontageObj)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, "Failed to set ragdoll montage: " + MontagePath);
+
+			return;
+		}
+
+		TMap<OverlayState, UAnimMontage*>* RagdollMontage = IsFront ? &RagdollMontageFront : &RagdollMontageBack;
+
+		for (OverlayState state : Group.Value)
+		{
+			if (RagdollMontage->Find(state))
+			{
+				(*RagdollMontage)[state] = MontageObj;
+				continue;
+			}
+
+			RagdollMontage->Add(state, MontageObj);
+		}
+	}
+}
+
+UAnimMontage* AActionSetup::GetRollMontage(OverlayState State)
+{
+	if (RollMontage.Find(State))
+	{
+		return RollMontage[State];
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
+	                                 "Failed to load roll montage: " + UEnum::GetValueAsString(State));
+	return nullptr;
+}
+
+UAnimMontage* AActionSetup::GetMantleMontage(OverlayState State)
+{
+	if (MantleMontage.Find(State))
+	{
+		return MantleMontage[State];
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
+	                                 "Failed to load mantle montage: " + UEnum::GetValueAsString(State));
+	return nullptr;
+}
+
+UAnimMontage* AActionSetup::GetRagdollMontage(OverlayState State, bool FaceUp)
+{
+	TMap<OverlayState, UAnimMontage*>* RagdollMontage = FaceUp ? &RagdollMontageBack : &RagdollMontageFront;
+
+	if (RagdollMontage->Find(State))
+	{
+		return (*RagdollMontage)[State];
+	}
+
+	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
+	                                 "Failed to load mantle montage: " + UEnum::GetValueAsString(State));
+	return nullptr;
+}
+
+/*********************************************************************************************
+* Timelines
+********************************************************************************************* */
 
 void AActionSetup::MantleUpdate(float BlendIn)
 {

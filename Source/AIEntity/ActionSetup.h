@@ -1,4 +1,4 @@
-// Copyright Epic Games, Inc. All Rights Reserved.
+/** Copyright Epic Games, Inc. All Rights Reserved. */
 
 #pragma once
 
@@ -33,66 +33,137 @@ class AActionSetup : public ACharacter, public ICharacter_INTF
 	UCameraComponent* FollowCamera;
 
 public:
+	/** Initial setup of character */
 	AActionSetup();
 
 protected:
-	////////////////////////////////////////////////////////////////////////////////////
-	// Action Functions
+	/*********************************************************************************************
+	* Action Functions
+	********************************************************************************************* */
 
-	// movement input
-	void AdvanceMove(const FInputActionValue& Value);
-
-	// looking input
-	void AdvanceLook(const FInputActionValue& Value);
-
-	// stance input
-	void SetState(OverlayState stance);
-
-	// Jump Action
-	void AdvanceJump(double ForwardDesiredLocation = 0, double RightDesiredLocation = 0);
-
-	// Crouch Action
-	void AdvanceCrouch();
-
-	// Roll Action
-	void AdvanceRoll();
-
-	// Sprint Action
-	void AdvanceSprintStart();
-	void AdvanceSprintEnd();
-
-	// Ragdoll Action
-	void AdvanceRagdoll();
-
-	// Aim Action
-	void AdvanceAimStart();
-	void AdvanceAimEnd();
-
-	////////////////////////////////////////////////////////////////////////////////////
-	// Event Functions
-
-	void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
-
-	void Jump() override;
-
-	void Landed(const FHitResult& Hit) override;
-
+	/** On game begin event */
 	virtual void BeginPlay() override;
 
+	/**
+	 * Event every second game runs
+	 * 
+	 * @param DeltaTime In game time
+	 */
 	virtual void Tick(float DeltaTime) override;
 
-	// UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Input)
-	UCurveFloat* CurveFloat;
+	/**
+	 * On movement mode change event
+	 * 
+	 * @param PrevMovementMode Previous movement mode
+	 * @param PreviousCustomMode Previous custom movement mode
+	 */
+	void OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 PreviousCustomMode = 0) override;
+
+	/** On jump Event */
+	void Jump() override;
+
+	/**
+	 * On land event
+	 * 
+	 * @param Hit Platform landed information
+	 */
+	void Landed(const FHitResult& Hit) override;
+
+	/**
+	 * Movement input
+	 *
+	 * @param Value Direction to move to
+	 */
+	void AdvanceMove(const FInputActionValue& Value);
+
+	/**
+	 * Looking input
+	 *
+	 * @param Value Direction to look to
+	 */
+	void AdvanceLook(const FInputActionValue& Value);
+
+	/** 
+	* Stance input
+	*
+	* @param stance Set state of character
+	*/
+	void SetState(OverlayState stance);
+
+	/** Jumping Action Start */
+	void AdvanceJump(double ForwardDesiredLocation = 0, double RightDesiredLocation = 0);
+
+	/** Crouch Action */
+	void AdvanceCrouch();
+
+	/** Roll Action */
+	void AdvanceRoll();
+
+	/** Sprint Action Start */
+	void AdvanceSprintStart();
+	
+	/** Sprint Action End */
+	void AdvanceSprintEnd();
+
+	/** Ragdoll Action */
+	void AdvanceRagdoll();
+
+	/** Aim Action Start */
+	void AdvanceAimStart();
+	
+	/** Aim Action End */
+	void AdvanceAimEnd();
+
+	/**
+	 * Set list of roll montage
+	 * 
+	 * @param PathFolder Path to folder of animations
+	 * @param States Set montage based on state
+	 */
+	void SetRollMontage(FString PathFolder, TMap<FString, TArray<OverlayState>> States);
+
+	/**
+	 * Set list of mantle/climb montage
+	 * 
+	 * @param PathFolder Path to folder of animations
+	 * @param States Set montage based on state
+	 */
+	void SetMantleMontage(FString PathFolder, TMap<FString, TArray<OverlayState>> States);
+
+	/**
+	 * Set list of ragdoll montage
+	 *
+	 * @param PathFolder Path to folder of animations
+	 * @param States Set montage based on state
+	 * @param IsFront Is the character facing up in ragdoll
+	 */
+	void SetRagdollMontage(FString PathFolder, TMap<FString, TArray<OverlayState>> States, bool IsFront = true);
 
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
+
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
 
-	////////////////////////////////////////////////////////////////////////////////////
-	// Interface
 
+	/*********************************************************************************************
+	* Interface
+	********************************************************************************************* */
+
+	/**
+	 * Get character states
+	 *
+     * @param OutPawnMovementMode Pawn movement mode
+     * @param OutMovementState Current state of movement
+     * @param OutPrevMovementState Previous state of movement
+     * @param OutMovementAction Current type of movement action
+     * @param OutRotationMode Current rotation mode
+     * @param OutActualGait Current type of movement
+     * @param OutActualStance Current stance of character
+     * @param OutViewMode Type of camera view mode
+     * @param OutOverlayState Type of state
+	 */
 	virtual void INTF_Get_CurrentStates_Implementation(
 		TEnumAsByte<EMovementMode>& OutPawnMovementMode,
 		MovementState& OutMovementState,
@@ -107,6 +178,19 @@ public:
 
 	virtual void INTF_Set_MovementState_Implementation(MovementState NewMovementState) override;
 
+	/**
+	 * Set up essential values for animation
+	 *
+     * @param OutVelocity Character velocity
+     * @param OutAcceleration Character acceleration
+     * @param OutMovementInput Character movement
+     * @param OutIsMoving Is character moving
+     * @param OutHasMovementInput Can character move
+     * @param OutSpeed Current speed
+     * @param OutMovementInputAmount Current character movement amount
+     * @param OutAimingRotation Aim rotation
+     * @param OutAimYawRate Aim rate of rotation
+	 */
 	virtual void INTF_Get_EssentialValues_Implementation(
 		FVector& OutVelocity,
 		FVector& OutAcceleration,
@@ -120,102 +204,250 @@ public:
 	) override;
 
 private:
-	////////////////////////////////////////////////////////////////////////////////////
-	// Variables
+	/*********************************************************************************************
+	* Movement Values
+	********************************************************************************************* */
+
+	/** Character rotation in air */
 	FRotator InAirRotation;
+
+	/** Character current speed */
 	float Speed;
-	UAnimInstance* AnimInstance;
+
+	/** Amount of movement input received */
 	float MovementInputAmount;
+
+	/** Returns if character is moving */
 	bool IsMoving;
 
-	// Rotation
+	/** Current aim yaw rate for rotation */
 	float AimYawRate;
+
+	/** Previous aim yaw from rotation */
 	float PreviousAimYaw;
 
-	// Ragdoll
+	/** Curve asset for movement transitions */
+	UCurveFloat* CurveFloat;
+
+	/** Animation instance reference */
+	UAnimInstance* AnimInstance;
+
+	/** Last ragdoll velocity */
 	FVector LastRagdollVelocity;
+
+	/** Last ragdoll velocity */
 	FVector TargetRagdollLocation;
+
+	/** Returns if character is facing up on ragdoll */
 	bool RagdollFaceUp;
+
+	/** Returns if character has hit ground on ragdoll */
 	bool RagdollOnGround;
 
-	// Movement
+	/** Current movement settings */
 	FMovementSettings CurrentMovementSettings;
+
+	/** Get data table with movement settings */
 	FDataTableRowHandle MovementModel;
+
+	/** Obtained Movement data from data table */
 	FMovementSettings_State* MovementData;
+
+	/** Current character acceleration */
 	FVector Acceleration;
+
+	/** Previous character velocity */
 	FVector PreviousVelocity;
 
+	/** Last input for rotation */
 	FRotator LastMovementInputRotation;
+
+	/** Last rotations velocity */
 	FRotator LastVelocityRotation;
+
+	/** Desired rotation */
 	FRotator TargetRotation;
 
-	// States
+	/** Current state of movement */
 	MovementState CurrentMovementState;
+
+	/** Previous state of movement */
 	MovementState PrevMovementState;
+
+	/** Current type of movement action */
 	MovementAction CurrentMovementAction;
+
+	/** Current rotation mode */
 	RotationMode CurrentRotationMode;
+
+	/** Current type of movement */
 	Gait CurrentActualGait;
+
+	/** Current stance of character */
 	Stance CurrentStance;
+
+	/** Type of camera view mode */
 	ViewMode CurrentViewMode;
+
+	/** Type of state */
 	OverlayState CurrentOverlayState;
 
+	/** Type of mantle/climbing */
 	MantleType CurrentMantleType;
-	Gait desiredGait;
 
-	// Mantle
-	FMantle_TraceSettings GroundedTraceSettings = FMantle_TraceSettings(250, 50, 75, 30, 30, false);
-	FMantle_TraceSettings FallingTraceSettings = FMantle_TraceSettings(150, 50, 70, 30, 30, false);
+	/** Type of movement to transition to */
+	Gait DesiredGait;
+
+	/** Data for mantle/climbing when on ground */
+	FMantle_TraceSettings GroundedTraceSettings;
+
+	/** Data for mantle/climbing when falling */
+	FMantle_TraceSettings FallingTraceSettings;
+
+	/** Get mantle ledge data from world for moving object */
 	FComponentAndTransform MantleLedgeLs;
+
+	/** Get mantle/climbing data */
 	FMantleParams MantleParams;
+
+	/** Get current start offset */
 	FTransform ActualStartOffset;
+
+	/** Get animation start data */
 	FTransform AnimatedStartOffset;
+
+	/** Timeline for smooth transition on mantle/climbing */
 	UTimelineComponent* MantleTimeline;
+
+	/** Desired climbing/mantle data */
 	FTransform MantleTarget;
+
+	/** Reference to climbing/mantle finish function */
 	FOnTimelineFloat MantleProgress;
+
+	/** Reference to climbing/mantle finish function */
 	FOnTimelineEvent MantleFinish;
 
-	// Movement
+	/** Returns if character can move */
 	bool HasMovementInput;
+
+	/** Returns if braking the fall with a roll */
 	bool BreakFall;
 
-	// Montage Setup
+	/*********************************************************************************************
+	* Montage Setup
+	********************************************************************************************* */
+
+	/** Is a list for the roll animations per character state*/
 	TMap<OverlayState, UAnimMontage*> RollMontage;
+
+	/** Is a list for the Mantle/climbing animations per character state*/
 	TMap<OverlayState, UAnimMontage*> MantleMontage;
+
+	/** Is a list for the standing up from ragdoll looking face down animations per character state*/
 	TMap<OverlayState, UAnimMontage*> RagdollMontageFront;
+
+	/** Is a list for the standing up from ragdoll looking face up animations per character state*/
 	TMap<OverlayState, UAnimMontage*> RagdollMontageBack;
 
-	////////////////////////////////////////////////////////////////////////////////////
-	// Functions
+	/*********************************************************************************************
+	* Climbing/Mantle Setup
+	********************************************************************************************* */
 
+	/**
+	 * Check if mantle/climbing is possible
+	 *
+	 * @param TraceSettings Settings for mantle/climbing
+	 * @param ForwardDesiredLocation Detect forward/backward axis for climbing
+	 * @param RightDesiredLocation Detect right/left axis for climbing
+	 * @param Debug Trace draw for debugging
+	 */
 	bool MantleCheck(
-		FMantle_TraceSettings traceSettings,
+		FMantle_TraceSettings TraceSettings,
 		double ForwardDesiredLocation,
 		double RightDesiredLocation,
-		EDrawDebugTrace::Type debug = EDrawDebugTrace::None
+		EDrawDebugTrace::Type Debug = EDrawDebugTrace::None
 	);
 
-	void MantleStart(float mantleHeight, FComponentAndTransform mantleLedgeWS, MantleType mantleType);
+	/**
+	 * Starts the climbing/mantle action
+	 * 
+	 * @param MantleHeight Set height at which ledge is located
+	 * @param MantleLedgeWS Obtain data from ledge transformation
+	 * @param mantleType Obtain type of mantle/climbing for animation
+	 */
+	void MantleStart(float MantleHeight, FComponentAndTransform MantleLedgeWS, MantleType mantleType);
 
+	/*********************************************************************************************
+	* Values Setup
+	********************************************************************************************* */
+
+	/** Update all the values needed for character movement */
 	void UpdateCharacterMovement();
 
+	/** Setup data for movement */
 	void EssentialValuesSetup();
 
+	/** Start updating rotation on the ground with smooth animations */
 	void UpdateGroundRotation();
 
+	/** Start updating rotation on the air with smooth animations */
 	void UpdateAirRotation();
 
-	void UpdateRagdoll(EDrawDebugTrace::Type debug = EDrawDebugTrace::None);
+	/**
+	 * Obtain position, rotation, and other values when on ragdoll
+	 *
+	 * @param Debug Trace draw for debugging
+	 */
+	void UpdateRagdoll(EDrawDebugTrace::Type Debug = EDrawDebugTrace::None);
 
+	/**
+	 * Rotate the character with smooth transitions
+	 *
+	 * @param Target Desired final rotation
+	 * @param TargetInterpSpeed Desired speed for rotation transition
+	 * @param ActorInterpSpeed Speed at which is currently being transitioned
+	 */
 	void SmoothCharacterRotation(FRotator Target, float TargetInterpSpeed, float ActorInterpSpeed);
 
-	float MappedSeed();
+	/** Maps speed to an appropriate animation curve */
+	float MappedSpeed();
 
-	////////////////////////////////////////////////////////////////////////////////////
-	// Timeline Functions
+	/**
+	 * Retrieves the roll animation for the given state
+	 *
+	 * @param State State which animation is desired
+	 */
+	UAnimMontage* GetRollMontage(OverlayState State);
 
+	/**
+	 * Retrieves the mantle animation for the given state
+	 *
+	 * @param State State which animation is desired
+	 */
+	UAnimMontage* GetMantleMontage(OverlayState State);
+
+	/**
+	 * Retrieves the ragdoll animation for the given state
+	 *
+	 * @param State State which animation is desired
+	 * @param FaceUp Is character looking up
+	 */
+	UAnimMontage* GetRagdollMontage(OverlayState State, bool FaceUp = true);
+
+	/*********************************************************************************************
+	* Timeline Functions
+	********************************************************************************************* */
+
+	/**
+	 * Update the mantling/climbing timeline for smooth transition
+	 *
+	 * @param BlendIn Time from timeline
+	 */
 	UFUNCTION()
 	void MantleUpdate(float BlendIn);
 
+	/** When climbing/mantling ends, give mobility back to character */
 	UFUNCTION()
 	void MantleEnd();
 };
