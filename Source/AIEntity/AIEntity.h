@@ -469,15 +469,6 @@ public:
 	void INTF_Set_MovementAction(MovementAction NewMovementAction);
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void INTF_Set_RotationMode(RotationMode NewRotationMode);
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void INTF_Set_Gait(Gait NewGait);
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void INTF_Set_ViewMode(ViewMode NewViewMode);
-
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void INTF_Set_OverlayState(OverlayState NewOverlayState);
 };
 

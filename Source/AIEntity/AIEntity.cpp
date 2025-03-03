@@ -32,18 +32,6 @@ void ICharacter_INTF::INTF_Set_MovementAction(MovementAction NewMovementAction)
 {
 }
 
-void ICharacter_INTF::INTF_Set_RotationMode(RotationMode NewRotationMode)
-{
-}
-
-void ICharacter_INTF::INTF_Set_Gait(Gait NewGait)
-{
-}
-
-void ICharacter_INTF::INTF_Set_ViewMode(ViewMode NewViewMode)
-{
-}
-
 void ICharacter_INTF::INTF_Set_OverlayState(OverlayState NewOverlayState)
 {
 }

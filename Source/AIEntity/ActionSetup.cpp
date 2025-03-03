@@ -446,7 +446,7 @@ void AActionSetup::Jump()
 
 void AActionSetup::Crouch(bool bClientSimulation)
 {
-    Super::Crouch(bClientSimulation);
+	Super::Crouch(bClientSimulation);
 
 	CurrentStance = Stance::Crouching;
 }
@@ -489,7 +489,7 @@ void AActionSetup::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 P
 	switch (GetCharacterMovement()->MovementMode)
 	{
 	case MOVE_Falling:
-		
+
 		INTF_Set_MovementState_Implementation(MovementState::In_Air);
 		break;
 	case MOVE_Walking:
@@ -568,8 +568,8 @@ void AActionSetup::Tick(float DeltaTime)
 void AActionSetup::INTF_Set_MovementAction_Implementation(MovementAction NewMovementAction)
 {
 	ICharacter_INTF::INTF_Set_MovementAction_Implementation(NewMovementAction);
-	
-    PrevMovementAction = CurrentMovementAction;
+
+	PrevMovementAction = CurrentMovementAction;
 	CurrentMovementAction = NewMovementAction;
 
 	if (CurrentMovementAction == MovementAction::Rolling)
@@ -593,7 +593,7 @@ void AActionSetup::INTF_Set_OverlayState_Implementation(OverlayState NewOverlayS
 void AActionSetup::INTF_Set_MovementState_Implementation(MovementState NewMovementState)
 {
 	ICharacter_INTF::INTF_Set_MovementState_Implementation(NewMovementState);
-	
+
 	PrevMovementState = CurrentMovementState;
 	CurrentMovementState = NewMovementState;
 
@@ -602,8 +602,8 @@ void AActionSetup::INTF_Set_MovementState_Implementation(MovementState NewMoveme
 	if (CurrentMovementState == MovementState::Ragdoll)
 	{
 		if (PrevMovementState != MovementState::Mantling) return;
-        MantleTimeline->Stop();
-		
+		MantleTimeline->Stop();
+
 		return;
 	}
 
@@ -615,7 +615,7 @@ void AActionSetup::INTF_Set_MovementState_Implementation(MovementState NewMoveme
 
 	if (CurrentMovementAction != MovementAction::None) return;
 
-    InAirRotation = GetActorRotation();
+	InAirRotation = GetActorRotation();
 
 	if (CurrentStance == Stance::Crouching) UnCrouch();
 }
@@ -639,7 +639,7 @@ void AActionSetup::INTF_Get_EssentialValues_Implementation(
 		OutAimingRotation,
 		OutAimYawRate
 	);
-	
+
 	OutVelocity = GetVelocity();
 	OutAcceleration = Acceleration;
 	OutMovementInput = GetCharacterMovement()->GetCurrentAcceleration();
@@ -670,7 +670,7 @@ void AActionSetup::INTF_Get_CurrentStates_Implementation(
 		OutViewMode,
 		OutOverlayState
 	);
-	
+
 	OutPawnMovementMode = GetCharacterMovement()->MovementMode;
 	OutMovementState = CurrentMovementState;
 	OutPrevMovementState = PrevMovementState;
@@ -931,7 +931,7 @@ void AActionSetup::MantleStart(float MantleHeight, FComponentAndTransform Mantle
 	MantleTimeline->SetTimelineLength(maxTime - MantleParams.StartingPosition);
 
 	MantleTimeline->SetPlayRate(MantleParams.PlayRate);
-	
+
 	MantleTimeline->PlayFromStart();
 
 	if (MantleParams.AnimMontage)
@@ -943,23 +943,6 @@ void AActionSetup::MantleStart(float MantleHeight, FComponentAndTransform Mantle
 			MantleParams.StartingPosition,
 			false
 		);
-
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
-		                                 "Play Rate (" +
-		                                 FString::SanitizeFloat(
-											 MantleParams.PlayRate
-		                                 ) +
-		                                 ") ___________ Time Line Length (" +
-		                                 FString::SanitizeFloat(
-											 maxTime - MantleParams.StartingPosition
-		                                 ) +
-		                                 ") ___________ Start Position (" +
-		                                 FString::SanitizeFloat(
-											 MantleParams.StartingPosition
-		                                 ) +
-		                                 ")"
-		);
-
 	}
 }
 
@@ -1222,14 +1205,14 @@ void AActionSetup::UpdateRagdoll(EDrawDebugTrace::Type Debug)
 
 	TargetRagdollLocation = GetMesh()->GetSocketLocation("pelvis");
 
-	float PelvisRotation = GetMesh()->GetSocketRotation("pelvis").Yaw;
+	FRotator PelvisRotation = GetMesh()->GetSocketRotation("pelvis");
 
-	RagdollFaceUp = GetMesh()->GetSocketRotation("pelvis").Roll < 0;
+	RagdollFaceUp = PelvisRotation.Roll < 0;
 
 	FRotator TargetRagdollRotation = FRotator(
 		0,
 		0,
-		RagdollFaceUp ? PelvisRotation - 180 : PelvisRotation
+		RagdollFaceUp ? PelvisRotation.Yaw - 180 : PelvisRotation.Yaw
 	);
 
 	FHitResult Hit;
@@ -1237,8 +1220,11 @@ void AActionSetup::UpdateRagdoll(EDrawDebugTrace::Type Debug)
 	UKismetSystemLibrary::LineTraceSingle(
 		this,
 		TargetRagdollLocation,
-		FVector(TargetRagdollLocation.X, GetActorLocation().X,
-		        TargetRagdollLocation.Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight()),
+		FVector(
+			TargetRagdollLocation.X,
+			TargetRagdollLocation.Y,
+			TargetRagdollLocation.Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight()
+		),
 		UEngineTypes::ConvertToTraceType(ECC_Visibility),
 		false,
 		TArray<AActor*>(),
@@ -1458,10 +1444,10 @@ void AActionSetup::MantleUpdate(float BlendIn)
 	{
 		if (GetCharacterMovement()->MovementMode == MOVE_None)
 			GetCharacterMovement()->SetMovementMode(MOVE_Walking);
-		
+
 		return;
 	}
-	
+
 	MantleTarget = MantleLedgeLs.Transform * MantleLedgeLs.Component->GetComponentTransform();
 
 	float PositionAlpha = MantleParams.PositionAndCorrectiveCurve->GetVectorValue(
