@@ -12,108 +12,239 @@ void AUserCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-//////////////////////////////////////////////////////////////////////////
-// Input
+/*********************************************************************************************
+* Input
+********************************************************************************************* */
 
 void AUserCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	// Add Input Mapping Context
 	if (APlayerController* PlayerController = Cast<APlayerController>(GetController()))
 	{
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
+		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<
+			UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer()))
 		{
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	
+
 	// Set up action bindings
-	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent)) {
-		
+	if (UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(PlayerInputComponent))
+	{
 		// Jumping
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Started, this, &AUserCharacter::AdvanceJump, 0.0, 0.0);
-		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		EnhancedInputComponent->BindAction(
+			JumpAction,
+			ETriggerEvent::Started,
+			this,
+			&AUserCharacter::AdvanceJump,
+			0.0,
+			0.0
+		);
+		EnhancedInputComponent->BindAction(
+			JumpAction,
+			ETriggerEvent::Completed,
+			this,
+			&ACharacter::StopJumping
+		);
 
 		// Moving
-		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &AUserCharacter::AdvanceMove);
+		EnhancedInputComponent->BindAction(
+			MoveAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::AdvanceMove
+		);
 
 		// Looking
-		EnhancedInputComponent->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUserCharacter::AdvanceLook);
+		EnhancedInputComponent->BindAction(
+			LookAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::AdvanceLook
+		);
 
 		// Crouch
-		EnhancedInputComponent->BindAction(CrouchAction, ETriggerEvent::Started, this, &AUserCharacter::AdvanceCrouch);
+		EnhancedInputComponent->BindAction(
+			CrouchAction,
+			ETriggerEvent::Started,
+			this,
+			&AUserCharacter::AdvanceCrouch
+		);
 
 		// Roll
-		EnhancedInputComponent->BindAction(RollAction, ETriggerEvent::Started, this, &AUserCharacter::AdvanceRoll);
+		EnhancedInputComponent->BindAction(
+			RollAction,
+			ETriggerEvent::Started,
+			this,
+			&AUserCharacter::AdvanceRoll
+		);
 
 		// Sprint
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Started, this, &AUserCharacter::AdvanceSprintStart);
-		EnhancedInputComponent->BindAction(SprintAction, ETriggerEvent::Completed, this, &AUserCharacter::AdvanceSprintEnd);
-		
-		// Ragdoll
-		EnhancedInputComponent->BindAction(RagdollAction, ETriggerEvent::Started, this, &AUserCharacter::AdvanceRagdoll);
+		EnhancedInputComponent->BindAction(
+			SprintAction,
+			ETriggerEvent::Started,
+			this,
+			&AUserCharacter::AdvanceSprintStart
+		);
+		EnhancedInputComponent->BindAction(
+			SprintAction,
+			ETriggerEvent::Completed,
+			this,
+			&AUserCharacter::AdvanceSprintEnd
+		);
 
-		///////////////////////////////////////////////////
-		/// Stance Setup
-        
+		// Ragdoll
+		EnhancedInputComponent->BindAction(
+			RagdollAction,
+			ETriggerEvent::Started,
+			this,
+			&AUserCharacter::AdvanceRagdoll
+		);
+
+		// Aim
+		EnhancedInputComponent->BindAction(
+			AimAction,
+			ETriggerEvent::Started,
+			this,
+			&AUserCharacter::AdvanceAimStart
+		);
+		
+		EnhancedInputComponent->BindAction(
+			AimAction,
+			ETriggerEvent::Completed,
+			this,
+			&AUserCharacter::AdvanceAimEnd
+		);
+
+		/*********************************************************************************************
+		* Stance Setup
+		********************************************************************************************* */
+
 		// Default Stance
-		EnhancedInputComponent->BindAction(DefaultAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Default);
+		EnhancedInputComponent->BindAction(
+			DefaultAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Default
+		);
 
 		// Masculine Stance
-		EnhancedInputComponent->BindAction(MasculineAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Masculine);
+		EnhancedInputComponent->BindAction(
+			MasculineAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Masculine
+		);
 
 		// Feminine Stance
-		EnhancedInputComponent->BindAction(FeminineAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Feminine);
+		EnhancedInputComponent->BindAction(
+			FeminineAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Feminine
+		);
 
 		// Injured Stance
-		EnhancedInputComponent->BindAction(InjuredAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Injured);
+		EnhancedInputComponent->BindAction(
+			InjuredAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Injured
+		);
 
 		// HandsTied Stance
-		EnhancedInputComponent->BindAction(HandsTiedAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::HandsTied);
+		EnhancedInputComponent->BindAction(
+			HandsTiedAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::HandsTied
+		);
 
 		// Rifle Stance
-		EnhancedInputComponent->BindAction(RifleAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Rifle);
+		EnhancedInputComponent->BindAction(
+			RifleAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Rifle
+		);
 
 		// Pistol_1H Stance
-		EnhancedInputComponent->BindAction(Pistol_1HAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Pistol_1H);
+		EnhancedInputComponent->BindAction(
+			Pistol_1HAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Pistol_1H
+		);
 
 		// Pistol_2H Stance
-		EnhancedInputComponent->BindAction(Pistol_2HAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Pistol_2H);
+		EnhancedInputComponent->BindAction(
+			Pistol_2HAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Pistol_2H
+		);
 
 		// Bow Stance
-		EnhancedInputComponent->BindAction(BowAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Bow);
+		EnhancedInputComponent->BindAction(
+			BowAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Bow
+		);
 
 		// Torch Stance
-		EnhancedInputComponent->BindAction(TorchAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Torch);
+		EnhancedInputComponent->BindAction(
+			TorchAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Torch
+		);
 
 		// Binoculars Stance
-		EnhancedInputComponent->BindAction(BinocularsAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Binoculars);
+		EnhancedInputComponent->BindAction(
+			BinocularsAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Binoculars
+		);
 
 		// Box Stance
-		EnhancedInputComponent->BindAction(BoxAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Box);
+		EnhancedInputComponent->BindAction(
+			BoxAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Box
+		);
 
 		// Barrel Stance
-		EnhancedInputComponent->BindAction(BarrelAction, ETriggerEvent::Triggered, this, &AUserCharacter::SetState,
-		                                   OverlayState::Barrel);
-		
-		// Aim
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Started, this, &AUserCharacter::AdvanceAimStart);
-		EnhancedInputComponent->BindAction(AimAction, ETriggerEvent::Completed, this, &AUserCharacter::AdvanceAimEnd);
+		EnhancedInputComponent->BindAction(
+			BarrelAction,
+			ETriggerEvent::Triggered,
+			this,
+			&AUserCharacter::INTF_Set_OverlayState_Implementation,
+			OverlayState::Barrel
+		);
 	}
 	else
 	{
-		UE_LOG(LogTemplateCharacter, Error, TEXT("'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."), *GetNameSafe(this));
+		UE_LOG(
+			LogTemplateCharacter,
+			Error,
+			TEXT(
+				"'%s' Failed to find an Enhanced Input component! This template is built to use the Enhanced Input system. If you intend to use the legacy system, then you will need to update this C++ file."
+			), *GetNameSafe(this)
+		);
 	}
 }
-

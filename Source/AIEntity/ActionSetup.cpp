@@ -54,13 +54,6 @@ AActionSetup::AActionSetup()
 	// Attach the camera to the end of the boom and let the boom adjust to match the controller orientation
 	FollowCamera->bUsePawnControlRotation = false; // Camera does not rotate relative to arm
 
-	// Setup Timeline Component
-	MantleTimeline = CreateDefaultSubobject<UTimelineComponent>(TEXT("MantleTimeline"));
-	CurveFloat = LoadObject<UCurveFloat>(
-		nullptr, TEXT("/Game/CharacterAnimSetup/Data/Curves/MantleCurves/MantleTimeline"));
-	MantleProgress.BindUFunction(this, FName("MantleUpdate"));
-	MantleFinish.BindUFunction(this, FName("MantleEnd"));
-
 	// Set To Not Climbable
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
 	GetMesh()->SetCollisionResponseToChannel(ECC_GameTraceChannel1, ECR_Ignore);
@@ -299,14 +292,6 @@ void AActionSetup::AdvanceLook(const FInputActionValue& Value)
 	}
 }
 
-void AActionSetup::SetState(OverlayState stance)
-{
-	if (Controller != nullptr)
-	{
-		if (CurrentOverlayState != stance) CurrentOverlayState = stance;
-	}
-}
-
 void AActionSetup::AdvanceJump(double ForwardDesiredLocation, double RightDesiredLocation)
 {
 	if (Controller == nullptr) return;
@@ -362,7 +347,7 @@ void AActionSetup::AdvanceRagdoll()
 
 	// Ragdoll Start
 	GetCharacterMovement()->SetMovementMode(MOVE_None);
-	CurrentMovementState = MovementState::Ragdoll;
+	INTF_Set_MovementState_Implementation(MovementState::Ragdoll);
 
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	GetMesh()->SetCollisionObjectType(ECollisionChannel::ECC_PhysicsBody);
@@ -393,12 +378,12 @@ void AActionSetup::AdvanceCrouch()
 
 	if (CurrentStance == Stance::Crouching)
 	{
-		CurrentStance = Stance::Standing;
+		DesiredStance = Stance::Standing;
 		UnCrouch();
 		return;
 	}
 
-	CurrentStance = Stance::Crouching;
+	DesiredStance = Stance::Crouching;
 	Crouch();
 }
 
@@ -459,6 +444,20 @@ void AActionSetup::Jump()
 	}
 }
 
+void AActionSetup::Crouch(bool bClientSimulation)
+{
+    Super::Crouch(bClientSimulation);
+
+	CurrentStance = Stance::Crouching;
+}
+
+void AActionSetup::UnCrouch(bool bClientSimulation)
+{
+	Super::UnCrouch(bClientSimulation);
+
+	CurrentStance = Stance::Standing;
+}
+
 void AActionSetup::Landed(const FHitResult& Hit)
 {
 	Super::Landed(Hit);
@@ -490,13 +489,14 @@ void AActionSetup::OnMovementModeChanged(EMovementMode PrevMovementMode, uint8 P
 	switch (GetCharacterMovement()->MovementMode)
 	{
 	case MOVE_Falling:
-		CurrentMovementState = MovementState::In_Air;
+		
+		INTF_Set_MovementState_Implementation(MovementState::In_Air);
 		break;
 	case MOVE_Walking:
-		CurrentMovementState = MovementState::Grounded;
+		INTF_Set_MovementState_Implementation(MovementState::Grounded);
 		break;
 	case MOVE_NavWalking:
-		CurrentMovementState = MovementState::Grounded;
+		INTF_Set_MovementState_Implementation(MovementState::Grounded);
 		break;
 	}
 }
@@ -515,11 +515,18 @@ void AActionSetup::BeginPlay()
 		MovementData = MovementModel.GetRow<FMovementSettings_State>("");
 	}
 
-	if (CurveFloat)
-	{
-		MantleTimeline->AddInterpFloat(CurveFloat, MantleProgress);
-		MantleTimeline->SetTimelineFinishedFunc(MantleFinish);
-	}
+	// Setup Timeline Component
+	MantleTimeline = NewObject<UTimelineComponent>(this);
+	MantleTimeline->RegisterComponent();
+	CurveFloat = LoadObject<UCurveFloat>(
+		nullptr, TEXT("/Game/CharacterAnimSetup/Data/Curves/MantleCurves/MantleTimeline"));
+	MantleProgress.BindUFunction(this, FName("MantleUpdate"));
+	MantleFinish.BindUFunction(this, FName("MantleEnd"));
+
+	MantleTimeline->AddInterpFloat(CurveFloat, MantleProgress);
+	MantleTimeline->SetTimelineFinishedFunc(MantleFinish);
+
+	if (DesiredStance == Stance::Crouching) Crouch();
 
 	AnimInstance = GetMesh()->GetAnimInstance();
 
@@ -558,9 +565,59 @@ void AActionSetup::Tick(float DeltaTime)
 * Interface
 ********************************************************************************************* */
 
+void AActionSetup::INTF_Set_MovementAction_Implementation(MovementAction NewMovementAction)
+{
+	ICharacter_INTF::INTF_Set_MovementAction_Implementation(NewMovementAction);
+	
+    PrevMovementAction = CurrentMovementAction;
+	CurrentMovementAction = NewMovementAction;
+
+	if (CurrentMovementAction == MovementAction::Rolling)
+	{
+		Crouch();
+	}
+
+	if (PrevMovementAction != MovementAction::Rolling) return;
+
+	if (DesiredStance == Stance::Crouching) Crouch();
+	else UnCrouch();
+}
+
+void AActionSetup::INTF_Set_OverlayState_Implementation(OverlayState NewOverlayState)
+{
+	ICharacter_INTF::INTF_Set_OverlayState_Implementation(NewOverlayState);
+
+	if (CurrentOverlayState != NewOverlayState) CurrentOverlayState = NewOverlayState;
+}
+
 void AActionSetup::INTF_Set_MovementState_Implementation(MovementState NewMovementState)
 {
-	NewMovementState = CurrentMovementState;
+	ICharacter_INTF::INTF_Set_MovementState_Implementation(NewMovementState);
+	
+	PrevMovementState = CurrentMovementState;
+	CurrentMovementState = NewMovementState;
+
+	if (CurrentMovementState != MovementState::In_Air && CurrentMovementState != MovementState::Ragdoll) return;
+
+	if (CurrentMovementState == MovementState::Ragdoll)
+	{
+		if (PrevMovementState != MovementState::Mantling) return;
+        MantleTimeline->Stop();
+		
+		return;
+	}
+
+	if (CurrentMovementAction == MovementAction::Rolling)
+	{
+		AdvanceRagdoll();
+		return;
+	}
+
+	if (CurrentMovementAction != MovementAction::None) return;
+
+    InAirRotation = GetActorRotation();
+
+	if (CurrentStance == Stance::Crouching) UnCrouch();
 }
 
 void AActionSetup::INTF_Get_EssentialValues_Implementation(
@@ -571,6 +628,18 @@ void AActionSetup::INTF_Get_EssentialValues_Implementation(
 	double& OutAimYawRate
 )
 {
+	ICharacter_INTF::INTF_Get_EssentialValues_Implementation(
+		OutVelocity,
+		OutAcceleration,
+		OutMovementInput,
+		OutIsMoving,
+		OutHasMovementInput,
+		OutSpeed,
+		OutMovementInputAmount,
+		OutAimingRotation,
+		OutAimYawRate
+	);
+	
 	OutVelocity = GetVelocity();
 	OutAcceleration = Acceleration;
 	OutMovementInput = GetCharacterMovement()->GetCurrentAcceleration();
@@ -590,6 +659,18 @@ void AActionSetup::INTF_Get_CurrentStates_Implementation(
 	OverlayState& OutOverlayState
 )
 {
+	ICharacter_INTF::INTF_Get_CurrentStates_Implementation(
+		OutPawnMovementMode,
+		OutMovementState,
+		OutPrevMovementState,
+		OutMovementAction,
+		OutRotationMode,
+		OutActualGait,
+		OutActualStance,
+		OutViewMode,
+		OutOverlayState
+	);
+	
 	OutPawnMovementMode = GetCharacterMovement()->MovementMode;
 	OutMovementState = CurrentMovementState;
 	OutPrevMovementState = PrevMovementState;
@@ -699,21 +780,21 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings TraceSettings, double Forwa
 	* Find if capsule has room and calculate mantle height
 	********************************************************************************************* */
 
-	FVector capsuleLocationFromBase = FVector(
+	FVector CapsuleLocationFromBase = FVector(
 		DownTraceLocation.X,
 		DownTraceLocation.Y,
 		GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 2 + DownTraceLocation.Z
 	);
 
 	startTrace = FVector(
-		capsuleLocationFromBase.X,
-		capsuleLocationFromBase.Y,
-		GetCapsuleComponent()->GetScaledCapsuleHalfHeight_WithoutHemisphere() + capsuleLocationFromBase.Z
+		CapsuleLocationFromBase.X,
+		CapsuleLocationFromBase.Y,
+		GetCapsuleComponent()->GetScaledCapsuleHalfHeight_WithoutHemisphere() + CapsuleLocationFromBase.Z
 	);
 	endTrace = FVector(
-		capsuleLocationFromBase.X,
-		capsuleLocationFromBase.Y,
-		capsuleLocationFromBase.Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight_WithoutHemisphere()
+		CapsuleLocationFromBase.X,
+		CapsuleLocationFromBase.Y,
+		CapsuleLocationFromBase.Z - GetCapsuleComponent()->GetScaledCapsuleHalfHeight_WithoutHemisphere()
 	);
 
 	UKismetSystemLibrary::SphereTraceSingle(
@@ -733,27 +814,25 @@ bool AActionSetup::MantleCheck(FMantle_TraceSettings TraceSettings, double Forwa
 
 	if (Hit.bBlockingHit || Hit.bStartPenetrating) return false; // No room
 
-	FTransform targetTransform(
+	FTransform TargetTransform = FTransform(
 		FVector(initialTraceImpactNormal * FVector(-1, -1, 0)).Rotation(),
-		capsuleLocationFromBase,
+		CapsuleLocationFromBase,
 		FVector(1, 1, 1)
 	);
 
-	float mantleHeight = targetTransform.GetLocation().Z - GetActorLocation().Z;
+	float MantleHeight = TargetTransform.GetLocation().Z - GetActorLocation().Z;
 
 	if (CurrentMovementState == MovementState::In_Air) CurrentMantleType = MantleType::FallingCatch;
-	else if (mantleHeight > 120) CurrentMantleType = MantleType::HighMantle;
+	else if (MantleHeight > 120) CurrentMantleType = MantleType::HighMantle;
 	else CurrentMantleType = MantleType::LowMantle;
 
-	MantleStart(mantleHeight, FComponentAndTransform(targetTransform, hitComponent), CurrentMantleType);
+	MantleStart(MantleHeight, FComponentAndTransform(TargetTransform, hitComponent), CurrentMantleType);
 
 	return true;
 }
 
 void AActionSetup::MantleStart(float MantleHeight, FComponentAndTransform MantleLedgeWS, MantleType mantleType)
 {
-	FMantleAsset MantleAsset;
-
 	switch (mantleType)
 	{
 	case MantleType::HighMantle:
@@ -804,15 +883,19 @@ void AActionSetup::MantleStart(float MantleHeight, FComponentAndTransform Mantle
 	MantleParams = FMantleParams(
 		MantleAsset.AnimMontage,
 		MantleAsset.PositionAndCorrectiveCurve,
-		FMath::GetMappedRangeValueClamped(
-			FVector2d(MantleAsset.LowHeight, MantleAsset.HighHeight),
-			FVector2d(MantleAsset.LowStartPosition, MantleAsset.HighStartPosition),
-			MantleHeight
+		UKismetMathLibrary::MapRangeClamped(
+			MantleHeight,
+			MantleAsset.LowHeight,
+			MantleAsset.HighHeight,
+			MantleAsset.LowStartPosition,
+			MantleAsset.HighStartPosition
 		),
-		FMath::GetMappedRangeValueClamped(
-			FVector2d(MantleAsset.LowHeight, MantleAsset.HighHeight),
-			FVector2d(MantleAsset.LowPlayRate, MantleAsset.HighPlayRate),
-			MantleHeight
+		UKismetMathLibrary::MapRangeClamped(
+			MantleHeight,
+			MantleAsset.LowHeight,
+			MantleAsset.HighHeight,
+			MantleAsset.LowPlayRate,
+			MantleAsset.HighPlayRate
 		),
 		MantleAsset.StartingOffset
 	);
@@ -840,7 +923,7 @@ void AActionSetup::MantleStart(float MantleHeight, FComponentAndTransform Mantle
 
 	GetCharacterMovement()->SetMovementMode(MOVE_None);
 
-	CurrentMovementState = MovementState::Mantling;
+	INTF_Set_MovementState_Implementation(MovementState::Mantling);
 
 	float maxTime, minTime;
 	MantleParams.PositionAndCorrectiveCurve->GetTimeRange(minTime, maxTime);
@@ -848,7 +931,7 @@ void AActionSetup::MantleStart(float MantleHeight, FComponentAndTransform Mantle
 	MantleTimeline->SetTimelineLength(maxTime - MantleParams.StartingPosition);
 
 	MantleTimeline->SetPlayRate(MantleParams.PlayRate);
-
+	
 	MantleTimeline->PlayFromStart();
 
 	if (MantleParams.AnimMontage)
@@ -860,6 +943,23 @@ void AActionSetup::MantleStart(float MantleHeight, FComponentAndTransform Mantle
 			MantleParams.StartingPosition,
 			false
 		);
+
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red,
+		                                 "Play Rate (" +
+		                                 FString::SanitizeFloat(
+											 MantleParams.PlayRate
+		                                 ) +
+		                                 ") ___________ Time Line Length (" +
+		                                 FString::SanitizeFloat(
+											 maxTime - MantleParams.StartingPosition
+		                                 ) +
+		                                 ") ___________ Start Position (" +
+		                                 FString::SanitizeFloat(
+											 MantleParams.StartingPosition
+		                                 ) +
+		                                 ")"
+		);
+
 	}
 }
 
@@ -1354,6 +1454,14 @@ UAnimMontage* AActionSetup::GetRagdollMontage(OverlayState State, bool FaceUp)
 
 void AActionSetup::MantleUpdate(float BlendIn)
 {
+	if (!AnimInstance->Montage_IsPlaying(MantleAsset.AnimMontage))
+	{
+		if (GetCharacterMovement()->MovementMode == MOVE_None)
+			GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+		
+		return;
+	}
+	
 	MantleTarget = MantleLedgeLs.Transform * MantleLedgeLs.Component->GetComponentTransform();
 
 	float PositionAlpha = MantleParams.PositionAndCorrectiveCurve->GetVectorValue(
@@ -1425,6 +1533,5 @@ void AActionSetup::MantleUpdate(float BlendIn)
 
 void AActionSetup::MantleEnd()
 {
-	if (MantleTimeline->GetPlaybackPosition())
-		GetCharacterMovement()->SetMovementMode(MOVE_Walking);
+	GetCharacterMovement()->SetMovementMode(MOVE_Walking);
 }

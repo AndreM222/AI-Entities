@@ -62,6 +62,12 @@ protected:
 	/** On jump Event */
 	void Jump() override;
 
+	/** On Crouch Event */
+	void Crouch(bool bClientSimulation = false) override;
+
+	/** On UnCrouch Event */
+	void UnCrouch(bool bClientSimulation = false) override;
+
 	/**
 	 * On land event
 	 * 
@@ -82,13 +88,6 @@ protected:
 	 * @param Value Direction to look to
 	 */
 	void AdvanceLook(const FInputActionValue& Value);
-
-	/** 
-	* Stance input
-	*
-	* @param stance Set state of character
-	*/
-	void SetState(OverlayState stance);
 
 	/** Jumping Action Start */
 	void AdvanceJump(double ForwardDesiredLocation = 0, double RightDesiredLocation = 0);
@@ -176,7 +175,26 @@ public:
 		OverlayState& OutOverlayState
 	) override;
 
+	/**
+	 * Setup new movement state
+	 * 
+	 * @param NewMovementState Setup new movement state
+	 */
 	virtual void INTF_Set_MovementState_Implementation(MovementState NewMovementState) override;
+
+	/**
+	 * Setup new action state
+	 * 
+	 * @param NewMovementAction Setup new movement action
+	 */
+	virtual void INTF_Set_MovementAction_Implementation(MovementAction NewMovementAction) override;
+
+	/**
+	 * Set new character state
+	 * 
+	 * @param NewOverlayState Setup new state
+	 */
+	virtual void INTF_Set_OverlayState_Implementation(OverlayState NewOverlayState) override;
 
 	/**
 	 * Set up essential values for animation
@@ -276,6 +294,9 @@ private:
 
 	/** Current type of movement action */
 	MovementAction CurrentMovementAction;
+	
+	/** Previous type of movement action */
+	MovementAction PrevMovementAction;
 
 	/** Current rotation mode */
 	RotationMode CurrentRotationMode;
@@ -285,6 +306,9 @@ private:
 
 	/** Current stance of character */
 	Stance CurrentStance;
+	
+	/** Desired stance of character */
+	Stance DesiredStance;
 
 	/** Type of camera view mode */
 	ViewMode CurrentViewMode;
@@ -349,6 +373,9 @@ private:
 
 	/** Is a list for the standing up from ragdoll looking face up animations per character state*/
 	TMap<OverlayState, UAnimMontage*> RagdollMontageBack;
+
+	/** Mantle data used for climbing*/
+	FMantleAsset MantleAsset;
 
 	/*********************************************************************************************
 	* Climbing/Mantle Setup
