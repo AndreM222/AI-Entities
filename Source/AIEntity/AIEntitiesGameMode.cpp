@@ -1,7 +1,7 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "AIEntitiesGameMode.h"
-#include "ActionSetup.h"
+#include "./Movement-Setup/ActionSetup.h"
 #include "UObject/ConstructorHelpers.h"
 
 AAIEntitiesGameMode::AAIEntitiesGameMode()

@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AIEntity.h"
+#include "../AIEntity.h"
 #include "GameFramework/Character.h"
 #include "Logging/LogMacros.h"
 #include "InputActionValue.h"

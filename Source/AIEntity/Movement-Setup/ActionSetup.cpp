@@ -63,7 +63,7 @@ AActionSetup::AActionSetup()
 	PrevMovementState = MovementState::Grounded;
 	CurrentMovementAction = MovementAction::None;
 	CurrentRotationMode = RotationMode::LookingDirection;
-	CurrentActualGait = Gait::Running;
+	DesiredGait = Gait::Running;
 	CurrentStance = Stance::Standing;
 	CurrentViewMode = ViewMode::ThirdPerson;
 	CurrentOverlayState = OverlayState::Default;
