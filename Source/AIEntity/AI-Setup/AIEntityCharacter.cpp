@@ -3,6 +3,10 @@
 
 #include "AIEntityCharacter.h"
 
+AAIEntityCharacter::AAIEntityCharacter()
+{
+	AutoPossessAI = EAutoPossessAI::PlacedInWorldOrSpawned;
+}
 
 void AAIEntityCharacter::BeginPlay()
 {

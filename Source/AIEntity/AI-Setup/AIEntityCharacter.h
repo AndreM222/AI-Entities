@@ -33,6 +33,8 @@ public:
 	EAISensory SensoryType;
 	EAIActions ActionType;
 
+	AAIEntityCharacter();
+
 private:
 	void ExecuteAction(TMap<EAIActions, float> &ActionLevels);
 
