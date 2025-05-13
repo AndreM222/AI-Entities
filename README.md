@@ -8,7 +8,7 @@ This project contains the setup of the AI Entities for my research.
 - Unreal Engine 5.4.4
 
 ## Roadmap
-- Move whats left from blueprints to C++
+- Move whats left from blueprints to C++ - *(In Progess Right Now)*
 - Organize correctly *(Lines are too long because of time constrain)*
 - Interact Acton *(Touch and Grab)*
 - Physical adaptable traits *(Health, Stamina, Speed)*
